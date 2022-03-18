@@ -1,0 +1,14 @@
+
+
+
+
+
+
+Test Script Task 3 and 4: 
+
+    From investigating the differences between the ref files and my generated files, I believe there are two differences in my regex pattern and the one used to generate the reference file. 
+    
+My regex pattern is: 
+sed -nE "s/.*\b(the|The|a|A) ([a-zA-Z]+) $key\b.*/\2/p" $txtfile
+
+    I believe one difference is that I included 'The' and 'A' as well as 'the' and 'a'. For example, my pattern captured "The former man may make him." whereas 'former' did not appear in the reference file. Additionally, I included a \b after the key noun to make sure that only the noun on its own would be captured. For example, when searching for the noun 'fish', the reference file included the adjective 'unclean' when the only appearance of the pattern 'unclean fish' is in the phrase 'unclean fishpond'. My pattern did not include this as it is describing a fishpond, not a fish.

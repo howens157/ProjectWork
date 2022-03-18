@@ -1,0 +1,14 @@
+Hayden Owens
+2/22/2022
+Programming Paradigms Assignment 5
+
+I think that I got everything working except for the timing of the sorting algorithms.
+I tried to implement timing them by having a time attribute of the Sorter abstract class
+but I had a lot of issues with accessing and updating the time value which I believe is
+due to some confusion on how self is used in Python. For example, when I call the Sorter
+functions from the DataSet class, it requires me to pass a value for self. For example,
+if the function prototype is def sort(self, data), when I call the function it requires
+me to pass two arguments whereas I thought that you did not pass anything for self. I 
+am not sure where this error is coming from, but regardless, my other functions were
+still able to work but when I tried to add the timing everything started to break so I 
+did not include it.

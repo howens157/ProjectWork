@@ -1,0 +1,39 @@
+Hayden Owens
+Systems Programming
+m2c report
+
+All tests performed on student11
+
+Case 1) aabbb
+    1 thread:
+        load average: 0.24, 0.62, 0.36
+        time: 6.977s
+    2 threads:
+        load average: 0.14, 0.54, 0.34
+        time: 5.673s
+    4 threads:
+        load average: 0.07, 0.47, 0.33
+        time: 5.709s
+
+Case 2) cmc
+    1 thread:
+        load average: 0.68. 0.85, 0.5
+        time: 7.871s
+    2 threads:
+        load average: 2.11, 1.28, 0.67
+        time: 6.398s
+    4 threads:
+        load average: 0.88, 1.08, 0.64
+        time: 6.290s
+
+Case 3) RedCastle
+    1 thread:
+        load average: 0.04, 0.74, 0.78
+        time: 1m 55.800s
+    2 threads:
+        load average: 1.08, 0.98, 0.87
+        time: 1m 14.564s
+    4 threads:
+        load average: 1.71, 1.39, 1.04
+        time: 51.164s
+

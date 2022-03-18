@@ -1,0 +1,93 @@
+* Name: Hayden Owens
+* Email: howens@nd.edu
+* File Name: description.txt
+* Date Created: 11/9/2021
+* File Contents: This file contains the description of how PC07 was completed
+
+The Data Structure I chose to use for my implementation of is_permutation was a Hash Table.
+I chose this data structure because I knew I had to keep track of the number of occurrences
+of each character in the phrase as I looped through the phrase. A Hash Table allows me to
+update the number of occurrences of a certain character in O(1) time by using that character
+as the key and the number of occurrences as the value.
+
+My is_permutation function solves the problem by keeping track of the number of occurrences
+of each character in the phrase and counting the number of characters that occur an odd
+number of times.
+
+A phrase is a palindromic permutation if it consists of letters that occur an even number
+of time with one letter permitted to occur an odd number of times.
+For example,
+CIVIC:
+	C: 2
+	I: 2
+	V: 1
+Only 1 odd letter, civic is a palindrome
+
+CIVIL:
+	C: 1
+	I: 2
+	V: 1
+	L: 1
+3 odd letters, civil is not a palindrome
+
+SAIPPUAKIVIKAUPPIAS:
+	S: 2
+	A: 4
+	I: 4
+	P: 4
+	U: 2
+	K: 2
+	V: 1
+Only 1 odd letter, saippuakivikauppias is a palindrome
+
+Thus, if you count the number of characters that occur an odd number of times, you will
+know whether or not the phrase is a palindrome permutation.
+
+The actual functions works as follows:
+
+Create an unordered_map<char, int> called occurrences. Initialize an int numodds to zero.
+Within a for loop that iterates from 0 to the length of the phrase, first convert the
+current character in the phrase to its lowercase form. Then check if character already
+exists as a key within occurrences. If it does not, then this character has not occurred
+in the phrase before, so create it and initialize its value to 1. Otherwise, the character
+has already occurred so just increment its value by 1. Now, check if the updated number
+of occurrences is odd. If it is, then increment numodds. If it is even then that means
+that a character that used to have an odd number of occurrences now has an even number
+of occurrences, so subtract 1 from numodds. Finally, after the loop has finished processing
+the whole phrase, return true if numodds is 1 or 0. Otherwise return false.
+
+The function is as follows:
+
+bool is_palindrome(std::string currphrase){
+    std::unordered_map<char, int> occurrences;
+    int numodds = 0;
+    for(long unsigned int iter = 0; iter < currphrase.length(); iter++)
+    {
+        currphrase[iter] = (char)std::tolower(currphrase[iter]);
+        if(occurrences.find(currphrase[iter]) == occurrences.end())
+            occurrences[currphrase[iter]] = 1;
+        else
+            occurrences[currphrase[iter]] += 1;
+        if(occurrences[currphrase[iter]]%2 == 1)
+            numodds++;
+        else
+            numodds--;
+    }
+    if(numodds == 1 || numodds == 0)
+        return true;
+    else
+        return false;
+}
+
+Everything within the loop occurs at a constant time complexity regardless of the
+length of currphrase. The same goes for the initializations before the loop and the
+return statements after the loop. Thus, the statements before and after the loop can
+be reduced to O(1) time complexity.
+
+1 + 1 + currphrase.length()*(1 + 2 + 2) + 2
+5*currphrase.length() + 4
+5*N + 4
+0 <= 5N + 4 <= c*g(N)
+0 <= 5N + 4 <= 6N
+O(N) = {5N + 4: there exist some postive constants 6 and 4 such that 0 <= 5N + 4 <= 6N
+for all n>4}

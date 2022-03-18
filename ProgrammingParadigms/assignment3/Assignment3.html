@@ -1,0 +1,345 @@
+<!---Hayden Owens - Programming Paradigms - Assignment 3--->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Irish Wordle</title>
+	<style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="480" height="500"></canvas>
+	<script>
+		//set up canvas
+		let	canvas = document.getElementById("myCanvas");
+		let ctx = canvas.getContext("2d");
+		//thickness of stroke elements
+		ctx.lineWidth = 2.0;
+		
+		//words list
+		let words = ["aback", "abase", "abate", "abaya", "abbey", "abbot", "abets", "abhor", "abide", "abode", "abort", "about", "above", "abuse", "abuts", "abyss", "ached", "aches", "acids", "acing", "ackee", "acorn", "acres", "acrid", "acted", "actin", "actor", "acute", "adage", "adapt", "added", "adder", "addle", "adept", "adieu", "adios", "adits", "adman", "admin", "admit", "adobe", "adobo", "adopt", "adore", "adorn", "adult", "adzes", "aegis", "aeons", "aerie", "affix", "afire", "afoot", "afore", "after", "again", "agape", "agate", "agave", "agent", "aggro", "agile", "aging", "aglow", "agony", "agora", "agree", "ahead", "ahold", "aided", "aider", "aides", "ailed", "aimed", "aimer", "aioli", "aired", "aisle", "alarm", "album", "alder", "aleph", "alert", "algae", "algal", "alias", "alibi", "alien", "align", "alike", "alive", "alkyd", "alkyl", "allay", "alley", "allot", "allow", "alloy", "allyl", "aloes", "aloft", "aloha", "alone", "along", "aloof", "aloud", "alpha", "altar", "alter", "altos", "alums", "amass", "amaze", "amber", "ambit", "amble", "ambos", "amend", "amide", "amine", "amino", "amiss", "amity", "amnio", "among", "amour", "amped", "ample", "amply", "amuse", "ancho", "angel", "anger", "angle", "angry", "angst", "anima", "anime", "anion", "anise", "ankle", "annas", "annex", "annoy", "annul", "anode", "anole", "antic", "antis", "antsy", "anvil", "aorta", "apace", "apart", "aphid", "apnea", "apple", "apply", "apron", "apses", "apter", "aptly", "aquas", "arbor", "ardor", "areal", "areas", "areca", "arena", "argon", "argot", "argue", "argus", "arias", "arils", "arise", "armed", "armor", "aroma", "arose", "array", "arrow", "arses", "arson", "artsy", "asana", "ascot", "ashen", "ashes", "aside", "asked", "asker", "askew", "aspen", "aspic", "assay", "asses", "asset", "aster", "astir", "asura", "atlas", "atman", "atoll", "atoms", "atone", "atopy", "attic", "audio", "audit", "auger", "aught", "augur", "aunts", "aunty", "aural", "auras", "autos", "auxin", "avail", "avers", "avert", "avian", "avoid", "avows", "await", "awake", "award", "aware", "awash", "awful", "awoke", "axels", "axial", "axils", "axing", "axiom", "axion", "axles", "axons", "azide", "azole", "azure"];
+		let answer = words[Math.floor(Math.random()*words.length)];
+		//log the answer for debugging/testing
+		console.log(answer);
+		
+		//Letter Class holds a value for the letter, its location in the word, and the state
+		class Letter {
+			constructor(location) {
+				this.val = '';	//holds the letter or is empty
+				this.location = location; //location in the word
+				this.state = 0; //0 for normal, 1 for correct, 2 for included but wrong spot, 3 for not included
+			}
+			//change the value of the letter
+			set(newLetter){
+				this.val = newLetter;
+			}
+			//set the state of a letter according to the answer. Eg: if the word is alpha,
+			//and the letter is a in location 2, the state will be set to 2, indicating that
+			//the letter is correct but in the wrong spot
+			checkLetter(wordToCheck) {
+				this.state = 3;	//set to not included
+				for(let i = 0; i < wordToCheck.length; i++) {
+					if(this.val == wordToCheck[i] && this.location == i){
+						this.state = 1;	//letter is in the word in the right spot
+						break;
+					}
+					else if(this.val == wordToCheck[i] && this.location != i){
+						this.state = 2;	//letter is in the word but wrong spot
+						
+						//Note: For my implementatiion, if the words only has one 'a' which has already
+						//		been found, and a is guessed in another location, it will still be marked 
+						//		yellow for being in the word but not in that spot. This differs from how 
+						//		the real Wordle works, but I think this rule set is a bit more consistent in
+						//		how it labels yellow letters.
+					}
+				}
+			}
+		}
+		
+		//Guess class represents 1 of the 6 guesses the user has. It holds an array of 5 Letter
+		//objects which can be empty or hold a letter. It also keeps track of what letter the user
+		//will type next with currLocation. If currLocation = 5, the guess is full
+		class Guess {
+			constructor(length) {
+				this.length = length;
+				this.letters = [];
+				this.currLocation = 0;
+				for(let i = 0; i < length; i++) {
+					this.letters.push(new Letter(i));
+				}
+			}
+			
+			//checks the user's current guess against the current word. Returns true if a valid guess
+			//has been submitted, false if the guess was not full or not a valid word
+			check(wordToCheck) {
+				//if the guess is not full, prompt the user to type a full guess
+				if(this.currLocation < 5) {
+					alert("Please type a full word!");
+					return false;
+				}
+				//combine all the letters of this guess to get the full word and check it against the
+				//word bank. If it is not in the word bank, alert that the word was not recognized and
+				//return false
+				let nextGuess = "";
+				for(let i = 0; i < this.length; i++) {
+					nextGuess += this.letters[i].val;
+				}
+				if(!words.includes(nextGuess)) {
+					alert("Word Not Recognized");
+					return false;
+				}
+				//finally, if the guess is full and a valid word, check each letter against the answer 
+				//in order to set their states and color their squares correctly and return true to 
+				//indicate to the Board object to move on to the next guess
+				for(let i = 0; i < this.length; i++) {
+					this.letters[i].checkLetter(wordToCheck);
+				}
+				return true;
+			}
+			
+			//called by the Board object after a valid guess is submitted. Checks if the guess matches
+			//the answer and returns true or false accordingly
+			checkWin() {
+				let gameWon = true;
+				for(let i = 0; i < this.length; i++) {
+					if(this.letters[i].state != 1) {
+						gameWon = false;
+					}
+				}
+				return gameWon;
+			}
+			
+			//adds a new letter to the guess. Called when the user clicks on a letter in the Keyboard
+			//If the guess is already full, does nothing.
+			addLetter(newLetter) {
+				if(this.currLocation < this.length) {
+					this.letters[this.currLocation].set(newLetter);
+					this.currLocation++;
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+			
+			//deletes the most recent letter from the guess.
+			backspace() {
+				this.currLocation--;
+				this.letters[this.currLocation].set('');
+			}
+		}
+
+		//The Board class holds an array of 6 guesses, as well as some constants relevant to the game
+		//like the answer, the number of guesses, the length of each guess, and which guess the user is
+		//currently on
+		class Board {
+			constructor(answer, numGuesses, guessLength) {
+				this.answer = answer;
+				this.numGuesses = numGuesses;
+				this.guessLength = guessLength;
+				this.currGuess = 0;
+				this.guesses = [];
+				for(let i = 0; i < numGuesses; i++)
+				{
+					this.guesses.push(new Guess(guessLength));
+				}
+			}
+			
+			//just calls the addLetter method of the current Guess
+			addLetter(newLetter) {
+				this.guesses[this.currGuess].addLetter(newLetter);
+			}
+			
+			//just calls the backspace method of the current Guess
+			backspace() {
+				this.guesses[this.currGuess].backspace();
+			}
+			
+			//checks the currentGuess against the answer
+			checkGuess() {
+				//if the guess is a valid guess
+				if(this.guesses[this.currGuess].check(this.answer)) {
+					//move to the next guess
+					this.currGuess++;
+					//check if the guess that was just submitted is correct
+					if(this.guesses[this.currGuess-1].checkWin()) {
+						alert("You Win!");
+					}
+					//if the user has used all thier guesses without winning
+					else if(this.currGuess >= this.numGuesses) {
+						alert("You Lose!");
+					}
+				}
+			}
+		}
+		
+		//create a Board with 6 guesses and 5 letters per guess
+		let myBoard = new Board(answer, 6, 5);
+		
+		//The Key class is used to draw each Key on the canvas and check which Key the user
+		//has clicked on
+		class Key {
+			constructor(letter, x, y, length, width) {
+				this.letter = letter;
+				this.x = x;
+				this.y = y;
+				this.length = length;
+				this.width = width;
+			}
+		}
+		
+		//myKeyboard is an array of Key objects
+		let myKeyboard = [];
+		//first row
+		myKeyboard.push(new Key('q', 45, 300, 36, 36));
+		myKeyboard.push(new Key('w', 85, 300, 36, 36));
+		myKeyboard.push(new Key('e', 125, 300, 36, 36));
+		myKeyboard.push(new Key('r', 165, 300, 36, 36));
+		myKeyboard.push(new Key('t', 205, 300, 36, 36));
+		myKeyboard.push(new Key('y', 245, 300, 36, 36));
+		myKeyboard.push(new Key('u', 285, 300, 36, 36));
+		myKeyboard.push(new Key('i', 325, 300, 36, 36));
+		myKeyboard.push(new Key('o', 365, 300, 36, 36));
+		myKeyboard.push(new Key('p', 405, 300, 36, 36));
+		//second row
+		myKeyboard.push(new Key('a', 63, 340, 36, 36));
+		myKeyboard.push(new Key('s', 103, 340, 36, 36));
+		myKeyboard.push(new Key('d', 143, 340, 36, 36));
+		myKeyboard.push(new Key('f', 183, 340, 36, 36));
+		myKeyboard.push(new Key('g', 223, 340, 36, 36));
+		myKeyboard.push(new Key('h', 263, 340, 36, 36));
+		myKeyboard.push(new Key('j', 303, 340, 36, 36));
+		myKeyboard.push(new Key('k', 343, 340, 36, 36));
+		myKeyboard.push(new Key('l', 383, 340, 36, 36));	
+		//third row
+		myKeyboard.push(new Key(1, 45, 380, 36, 54)); //1 for ENTER
+		myKeyboard.push(new Key('z', 103, 380, 36, 36));
+		myKeyboard.push(new Key('x', 143, 380, 36, 36));
+		myKeyboard.push(new Key('c', 183, 380, 36, 36));
+		myKeyboard.push(new Key('v', 223, 380, 36, 36));
+		myKeyboard.push(new Key('b', 263, 380, 36, 36));
+		myKeyboard.push(new Key('n', 303, 380, 36, 36));
+		myKeyboard.push(new Key('m', 343, 380, 36, 36));
+		myKeyboard.push(new Key(2, 383, 380, 36, 54)); //2 for DELETE
+		
+		//drawBoard is called by draw and draws the grid in the top half of the canvas
+		function drawBoard() {
+			let x = 142;
+			let y = 40;
+			//for every guess
+			for(let i = 0; i < myBoard.numGuesses; i++) {
+				//for every letter in every guess
+				for(let j = 0; j < myBoard.guessLength; j++) {
+					//if the current letter is in state 1, color green
+					if(myBoard.guesses[i].letters[j].state == 1) {
+						ctx.beginPath();
+						ctx.rect(x + 40*j, y + 40*i, 35, 35);
+						ctx.fillStyle = "#50C878";
+						ctx.fill();
+						ctx.closePath();
+					}
+					//if the current letter is in state 2, color yellow
+					else if(myBoard.guesses[i].letters[j].state == 2) {
+						ctx.beginPath();
+						ctx.rect(x + 40*j, y + 40*i, 35, 35);
+						ctx.fillStyle = "#F7DC6F";
+						ctx.fill();
+						ctx.closePath();
+					}
+					//if the current letter is in state 3, color gray
+					else if(myBoard.guesses[i].letters[j].state == 3) {
+						ctx.beginPath();
+						ctx.rect(x + 40*j, y + 40*i, 35, 35);
+						ctx.fillStyle = "#85929E";
+						ctx.fill();
+						ctx.closePath();
+					}
+					//draw outline for each box in grid
+					ctx.beginPath();
+					ctx.rect(x + 40*j, y + 40*i, 35, 35);
+					ctx.strokeStyle = "#000000";
+					ctx.stroke();
+					ctx.closePath();
+					//write the letter in the box
+					ctx.font = "30px Consolas";
+					ctx.fillStyle = "black";
+					ctx.fillText(myBoard.guesses[i].letters[j].val.toUpperCase(), x+40*j+9, y+40*i+27);
+				}
+			}
+		}
+		
+		//drawKeys is called by draw and draws every Key in myKeyboard
+		function drawKeys(){
+			//for every Key in myKeyboard
+			for(let i = 0; i < myKeyboard.length; i++){
+				//draw the outline for the Key
+				ctx.beginPath();
+				ctx.rect(myKeyboard[i].x, myKeyboard[i].y, myKeyboard[i].width, myKeyboard[i].length);
+				ctx.strokeStyle = "#000000";
+				ctx.stroke();
+				ctx.closePath();
+				
+				//if the current Key's letter is strictly the number 1 (representing ENTER), write ENT in the box
+				if(myKeyboard[i].letter === 1) {
+					ctx.font = "28px Courier";
+					ctx.fillStyle = "black";
+					ctx.fillText("ENT", myKeyboard[i].x+2, myKeyboard[i].y+26);
+				}
+				//if the current Key's letter is strictly the number 2 (representing DELETE), write DET in the box
+				else if(myKeyboard[i].letter === 2) {
+					ctx.font = "28px Courier";
+					ctx.fillStyle = "black";
+					ctx.fillText("DEL", myKeyboard[i].x+2, myKeyboard[i].y+26);
+				}
+				//otherwise write the actual letter stored in the Key
+				else {
+					ctx.font = "28px Courier";
+					ctx.fillStyle = "black";
+					ctx.fillText(myKeyboard[i].letter.toUpperCase(), myKeyboard[i].x+10, myKeyboard[i].y+26);
+				}
+			}
+		}
+		
+		//call all draw functions every interval and also check for game over conditions
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawBoard();
+			drawKeys();
+		}
+		
+		//add event listeners for mouseclick
+		canvas.addEventListener("mousedown", checkClick, false);
+		
+		
+		//event handler for mousedown
+		function checkClick(e) {
+			let mouseX = e.offsetX;
+			let mouseY = e.offsetY;
+			let letterClicked = '0';
+			//for every Key, in myKeyboard, check if the mouse was clicked within that Key
+			for(let i = 0; i < myKeyboard.length; i++) {
+				if(mouseX > myKeyboard[i].x && mouseX < myKeyboard[i].x+myKeyboard[i].width && mouseY > myKeyboard[i].y && mouseY < myKeyboard[i].y+myKeyboard[i].length){
+					letterClicked = myKeyboard[i].letter;
+					break;
+				}
+			}
+			//if the user hit ENTER, submit the current guess to be checked
+			if(letterClicked === 1) {
+				myBoard.checkGuess();
+			}
+			//if the user hit DELETE, backspace a letter
+			else if(letterClicked === 2) {
+				myBoard.backspace();
+			}
+			//otherwise, if the user clicked within any other Key, add that letter to the current guess
+			else if(letterClicked !== '0') {
+				myBoard.addLetter(letterClicked);
+			}
+		}
+	
+		let interval = setInterval(draw, 10);
+	</script>
+</body>
+</html>

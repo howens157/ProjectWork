@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+set -u
+dir=$(dirname "$BASH_SOURCE")
+python3 "$dir"/union_nfa.py "$@"

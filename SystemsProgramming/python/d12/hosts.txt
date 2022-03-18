@@ -1,0 +1,7 @@
+ash.cse.nd.edu:22
+newt.cse.nd.edu:22
+student00.cse.nd.edu:22
+student00.cse.nd.edu:90
+mcmillco.com:22
+student02.cse.nd.edu:22
+google.com:22

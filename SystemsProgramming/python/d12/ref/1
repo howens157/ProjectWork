@@ -1,0 +1,7 @@
+ash.cse.nd.edu:22             SSH-2.0-OpenSSH_7.9p1 Debian-5
+newt.cse.nd.edu:22            SSH-2.0-OpenSSH_7.6p1 Ubuntu-4ubuntu0.5
+student00.cse.nd.edu:22       SSH-2.0-OpenSSH_7.4
+student00.cse.nd.edu:90       <connection refused>
+mcmillco.com:22               SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.3
+student02.cse.nd.edu:22       SSH-2.0-OpenSSH_7.4
+google.com:22                 <connection timeout>

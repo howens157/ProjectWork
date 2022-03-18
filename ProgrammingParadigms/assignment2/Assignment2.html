@@ -1,0 +1,325 @@
+<!---Hayden Owens - Programming Paradigms - Assignment 2--->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Irish Pong</title>
+	<style>
+		* { padding: 0; margin: 0; }
+		canvas { background: #eee; display: block; margin: 0 auto; }
+	</style>
+</head>
+<body>
+	<canvas id="myCanvas" width="600" height="400"></canvas>
+	<script>
+		//set up canvas
+		let	canvas = document.getElementById("myCanvas");
+		let ctx = canvas.getContext("2d");
+		//thickness of stroke elements
+		ctx.lineWidth = 2.0;
+
+		//dimensions for aspects of the screen
+		let headerHeight = 40;
+		let headerWidth = 180;
+		let goalHeight = 200;
+		let goalWidth = 100;
+
+		//Key Pressed Variables
+		let upPressed = false;
+		let downPressed = false;
+		let ePressed = false;
+
+		//Game Objects
+		let ball = {};
+		ball.Radius = 20;
+		ball.x = canvas.width/2;
+		ball.y = canvas.height/2 + headerHeight/2;
+		ball.speed = 3;
+		//give the ball a random angle of direction and then calculate the x and y components of its velocity
+		ball.angle = Math.floor(Math.random()*150 + 15);			
+		ball.dx = ball.speed*Math.sin(ball.angle * Math.PI/180);
+		ball.dy = ball.speed*Math.cos(ball.angle * Math.PI/180);
+		ball.Red = 100;
+		ball.Green = 100;
+		ball.Blue = 100;
+		
+		//userPaddle dimensions
+		let userPaddle = {};
+		userPaddle.height = 75;
+		userPaddle.width = 10;
+		userPaddle.y = (canvas.height + headerHeight - userPaddle.height)/2;
+		
+		//cpuPaddle dimensions
+		let cpuPaddle = {}
+		cpuPaddle.height = 75;
+		cpuPaddle.width = 10;
+		cpuPaddle.y = (canvas.height + headerHeight - cpuPaddle.height)/2;
+		
+		//score variables
+		let userScore = 0;
+		let cpuScore = 0;
+		
+		//draw the ball and check for collisions
+		function drawBall() {
+			//draw the ball
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.Radius, 0, Math.PI*2);
+			ctx.fillStyle = `rgba(${ball.Red}, ${ball.Green}, ${ball.Blue}, 1)`;
+			ctx.fill();
+			//outline for ball
+			ctx.strokeStyle = "black";
+			ctx.stroke();
+			ctx.closePath();
+			//update the location of the ball based on its velocity
+			ball.x += ball.dx;
+			ball.y += ball.dy;
+			//collision with top and bottom: just bounce off
+			if(ball.y + ball.dy < ball.Radius + headerHeight || ball.y + ball.dy > canvas.height - ball.Radius) {
+				ball.dy = -ball.dy;
+			}
+			//collision with left
+			if(ball.x + ball.dx < ball.Radius) {
+				//if the ball is in the goal
+				if(ball.y > canvas.height/2 + headerHeight/2 - goalHeight/2 && ball.y < canvas.height/2 + headerHeight/2 + goalHeight/2) {
+					//if the goal is blocked by paddle, bounce off
+					if(ball.y > cpuPaddle.y && ball.y < cpuPaddle.y + cpuPaddle.height) {
+						//give the ball a new angle based on where it hit the paddle and recalculate the velocity vector
+						ball.angle = (1-(ball.y-cpuPaddle.y)/cpuPaddle.height) * 150 + 15;
+						ball.dx = ball.speed*Math.sin(ball.angle * Math.PI/180);
+						ball.dy = ball.speed*Math.cos(ball.angle * Math.PI/180);
+						//randomize the color when the ball hits the paddle
+						ball.Red = Math.floor(Math.random() * 255);
+						ball.Green = Math.floor(Math.random() * 255);
+						ball.Blue = Math.floor(Math.random() * 255);
+					}
+					//otherwise a goal is scored
+					else {
+						userScore++;
+						//set the ball back in the center
+						ball.x = canvas.width/2;
+						ball.y = canvas.height/2 + headerHeight/2;
+						//kick the ball in the opposing goals direction
+						ball.angle = Math.floor(Math.random()*120 + 210);
+						ball.dx = ball.speed*Math.sin(ball.angle * Math.PI/180);
+						ball.dy = ball.speed*Math.cos(ball.angle * Math.PI/180);
+						//randomize the color when a goal is scored
+						ball.Red = Math.floor(Math.random() * 255);
+						ball.Green = Math.floor(Math.random() * 255);
+						ball.Blue = Math.floor(Math.random() * 255);
+					}
+				}
+				else {
+				//otherwise the ball hit the left wall so just bounce off
+					ball.dx = -ball.dx;
+				}
+			}
+			//collision with right
+			else if(ball.x + ball.dx > canvas.width - ball.Radius) {
+				//if the ball is in the goal
+				if(ball.y > canvas.height/2 + headerHeight/2 - goalHeight/2 && ball.y < canvas.height/2 + headerHeight/2 + goalHeight/2) {
+					//if the ball is blocked by the paddle
+					if(ball.y > userPaddle.y && ball.y < userPaddle.y + userPaddle.height) {
+						//give the ball a new angle based on where it hit the paddle and recalculate the velocity vector
+						ball.angle = (ball.y-userPaddle.y)/userPaddle.height * 150 + 195;
+						ball.dx = ball.speed*Math.sin(ball.angle * Math.PI/180);
+						ball.dy = ball.speed*Math.cos(ball.angle * Math.PI/180);
+						//randomize the color when the ball hits the paddle
+						ball.Red = Math.floor(Math.random() * 255);
+						ball.Green = Math.floor(Math.random() * 255);
+						ball.Blue = Math.floor(Math.random() * 255);
+					}
+					else {
+						cpuScore++;
+						//put the ball back in the center
+						ball.x = canvas.width/2;
+						ball.y = canvas.height/2 + headerHeight/2;
+						//kick the ball in the opposite goals directions
+						ball.angle = Math.floor(Math.random()*120 + 30);
+						ball.dx = ball.speed*Math.sin(ball.angle * Math.PI/180);
+						ball.dy = ball.speed*Math.cos(ball.angle * Math.PI/180);
+						//randomize the color when a goal is scored
+						ball.Red = Math.floor(Math.random() * 255);
+						ball.Green = Math.floor(Math.random() * 255);
+						ball.Blue = Math.floor(Math.random() * 255);
+					}
+				}
+				else {
+				//otherwise the ball hit the left wall so just bounce off
+					ball.dx = -ball.dx;
+				}
+			}
+		}
+		
+		function drawPaddles() {
+			//draw both paddles
+			ctx.beginPath();
+			ctx.rect(canvas.width-userPaddle.width, userPaddle.y, userPaddle.width, userPaddle.height);
+			ctx.fillStyle = "#000000";
+			ctx.fill();
+			ctx.closePath();
+			
+			ctx.beginPath();
+			ctx.rect(0, cpuPaddle.y, cpuPaddle.width, cpuPaddle.height);
+			ctx.fillStyle = "#000000";
+			ctx.fill();
+			ctx.closePath();
+			
+			//control userPaddle
+			if(upPressed) {
+				userPaddle.y -= 3;
+				//restrict the paddle to within the goal
+				if(userPaddle.y < canvas.height/2 + headerHeight/2 - goalHeight/2) {
+					userPaddle.y += 5;
+				}
+			}
+			else if(downPressed) {
+				userPaddle.y += 3;
+				//restrict the paddle to within the goal
+				if(userPaddle.y > canvas.height/2 + headerHeight/2 + goalHeight/2 - userPaddle.height) {
+					userPaddle.y -= 5;
+				}
+			}
+			
+			//control cpuPaddle: The cpuPaddle will slowly try to move towards the ball, moving up if the ball is above it, and down if the ball is below it
+			//					 The paddle also will only move if the ball is on its side of the field, to give the user an easier chance to score
+			if(ball.y > (cpuPaddle.y+cpuPaddle.height/2) && ball.x < canvas.width/2) {
+				cpuPaddle.y += 1;
+				if(cpuPaddle.y > canvas.height/2 + headerHeight/2 + goalHeight/2 - cpuPaddle.height) {
+					cpuPaddle.y = canvas.height/2 + headerHeight/2 + goalHeight/2 - cpuPaddle.height;
+				}
+			}
+			else if (ball.x < canvas.width/2) {
+				cpuPaddle.y -= 1;
+				if(cpuPaddle.y < canvas.height/2 + headerHeight/2 - goalHeight/2) {
+					cpuPaddle.y = canvas.height/2 + headerHeight/2 - goalHeight/2;
+				}
+			}
+		}
+		
+		function drawBoard() {
+			//Header for score
+			ctx.beginPath();
+			ctx.rect(canvas.width/2-headerWidth/2, 0, headerWidth, headerHeight);
+			ctx.fillStyle = "#87CEEB";
+			ctx.fill();
+			ctx.closePath();
+			//Outline of Header
+			ctx.beginPath();
+			ctx.rect(canvas.width/2-headerWidth/2, 0, headerWidth, headerHeight);
+			ctx.strokeStyle = "#000000";
+			ctx.stroke();
+			ctx.closePath();
+			//Green Background
+			ctx.beginPath();
+			ctx.rect(0, headerHeight, canvas.width, canvas.height-headerHeight);
+			ctx.fillStyle = "#567D46";
+			ctx.fill();
+			ctx.closePath();
+			//Outline of Board
+			ctx.beginPath();
+			ctx.rect(0, headerHeight, canvas.width, canvas.height-headerHeight);
+			ctx.strokeStyle = "#000000";
+			ctx.stroke();
+			ctx.closePath();
+			//Left Goal
+			ctx.beginPath();
+			ctx.rect(0, canvas.height/2 + headerHeight/2 - goalHeight/2, goalWidth, goalHeight);
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.stroke();
+			ctx.closePath();
+			//Right Goal
+			ctx.beginPath();
+			ctx.rect(canvas.width-goalWidth, canvas.height/2 + headerHeight/2 - goalHeight/2, goalWidth, goalHeight);
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.stroke();
+			ctx.closePath();
+			//Midfield
+			ctx.beginPath();
+			ctx.rect(canvas.width/2, headerHeight, 0, canvas.height - headerHeight);
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.stroke();
+			ctx.closePath();
+			//Center Circle
+			ctx.beginPath();
+			ctx.arc(canvas.width/2, canvas.height/2 + headerHeight/2, 100, 0, Math.PI*2);
+			ctx.strokeStyle = "#FFFFFF";
+			ctx.stroke();
+			ctx.closePath();
+		}
+		
+		//Draw the text elements in the header area
+		function drawScore() {
+			ctx.font = "20px Impact";
+			ctx.fillStyle = "black";
+			ctx.fillText(cpuScore, canvas.width/2 - 77, 27);
+			ctx.fillText("Score Board", canvas.width/2 - 50, 27);
+			ctx.fillText(userScore, canvas.width/2 + 67, 27);
+			ctx.font = "26px Algerian";
+			ctx.fillText("Irish Pong", 40, 27);
+			ctx.font = "18px Arial";
+			ctx.fillText("Press E to end game", 410, 27);
+		}
+		
+		//call all draw functions every interval and also check for game over conditions
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawBoard();
+			drawPaddles();
+			drawBall();
+			drawScore();
+			//check if the game should end
+			if(ePressed || userScore > 9 || cpuScore > 9) {
+				//User wins
+				if(userScore > cpuScore) {
+					alert(`You Win! ${userScore} - ${cpuScore}`);
+					document.location.reload();
+					clearInterval(interval);
+				}
+				//CPU wins
+				else if(cpuScore > userScore) {
+					alert(`You Lose! ${cpuScore} - ${userScore}`);
+					document.location.reload();
+					clearInterval(interval);
+				}
+				//Tie game
+				else {
+					alert(`Tie Game! ${userScore} - ${cpuScore}`);
+					document.location.reload();
+					clearInterval(interval);
+				}
+			}
+		}
+		
+		//add event listeners for keydown and keyup
+		document.addEventListener("keydown", keyDownHandler, false);
+		document.addEventListener("keyup", keyUpHandler, false);
+		
+		//event handlers to set keypress variables
+		function keyDownHandler(e) {
+			if(e.key == "Up" || e.key == "ArrowUp") {
+				upPressed = true;
+			}
+			else if(e.key == "Down" || e.key == "ArrowDown") {
+				downPressed = true;
+			}
+			else if(e.key == "e") {
+				ePressed = true;
+			}
+		}
+		
+		function keyUpHandler(e) {
+			if(e.key == "Up" || e.key == "ArrowUp") {
+				upPressed = false;
+			}
+			else if(e.key == "Down" || e.key == "ArrowDown") {
+				downPressed = false;
+			}
+			else if(e.key == "e") {
+				ePressed = false;
+			}
+		}
+		
+		let interval = setInterval(draw, 10);
+	</script>
+</body>
+</html>

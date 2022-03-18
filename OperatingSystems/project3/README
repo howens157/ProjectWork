@@ -1,0 +1,18 @@
+Hayden Owens
+Operating Systems Project 3 - README
+
+W,A,S,D are used to move around the image without zooming
+
+F will zoom out, R will zoom in
+
+T will increase maxiter by a scalar, G will decrease maxiter by a scalar
+    - This is useful for rapid increases or decreases
+
+Y will increase maxiter by 10, H will decrease maxiter by 10
+    - This is useful for finer adjustments when already zoomed in significantly
+
+Left click will center the image at the click
+
+Right click will center the image at the click and zoom in
+
+1-8 will specify the number of threads to use
