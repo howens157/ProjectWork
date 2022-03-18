@@ -1,6 +1,5 @@
 # Theory of Computing
 This folder contains project work for my Theory of Computing course.
-
 #
 Programming Assignment 1 (pa1) is concerned with simulating a Nondeterministic Finite Automata, reading in a the states and transitions from a .nfa file (located in ExampleNFAs), taking a string from the command line, and outputting whether that string is recognized by the NFA.
 #
