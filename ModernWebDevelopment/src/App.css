@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@300&display=swap');
+
+/* Blue background, white text will be consistent for all pages in the site */
+html,
+body {
+  background-color: #071278;
+  color: white;
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+}
+
+/* Content uses CSS grid with two columns */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  align-items: center;
+  text-align: center;
+}
+
+.graph {
+  border: 2px solid white;
+  padding: 10px 10px 20px 10px;
+  margin: 100px 0px 100px 0px
+}
+
+.statsHead {
+  margin: 20px 25%;
+  border: 2px solid white;
+  text-align: center;
+}
+
+/* Styling input text bar */
+input {
+  outline: none;
+  border: 2px solid white;
+  border-radius: 3px;
+  font-family: inherit;
+  color: white;
+  font-size: 1.5em;
+  background-color: #071278;
+}
+::placeholder {
+  color: white;
+}
+
+/* Styling button */
+button {
+  outline: none;
+  border: 2px solid white;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 1.5em;
+  background-color: #071278;
+  color: white;
+}
+
+/* Button hover */
+button:hover,
+button.inactiveTopic:hover {
+  cursor: pointer;
+  background-color: white;
+  color: #d59f4a;
+}
+
+button.activeTopic {
+  background-color: white;
+  color: #d59f4a;
+}
+
+button.activeTopic:hover {
+  cursor: default;
+}
+button.inactiveTopic {
+  background-color: #071278;
+  color: white;
+}
+/* Navbar uses flexbox and different font from body text */
+.nav {
+  display: flex;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  text-transform: lowercase;
+  width: 100%;
+  padding: 0;
+  justify-content: space-between;
+  list-style: none;
+  color: white;
+  align-items: center;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+}
+
+.nav li {
+  padding-left: 20px;
+  padding-right: 25px;
+}
+
+/* Link to home will have a larger font size */
+.home {
+  text-align: center;
+  font-size: 1.7rem;
+  padding-left: 20px;
+  padding-right: 25px;
+}
+
+/* Nested flexbox for links on right side */
+.links {
+  list-style: none;
+  display: flex;
+}
+
+.links a {
+  display: inline-block;
+}
+
+/* Links will have a gold color when hovered */
+.nav a:hover {
+  color: #d59f4a;
+}
+
+/* White bar between navbar and content */
+hr {
+  border: none;
+  height: 3px;
+  background-color: white;
+}
+
+.topic {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10rem;
+}
+
+input {
+  margin: 2em;
+}
