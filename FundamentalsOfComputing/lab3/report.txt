@@ -1,0 +1,28 @@
+Hayden Owens
+Lab 3 Report
+CSE 20311
+
+From the user's perspective, the program will output the options for the operators
+that the user can choose from. The user will be prompted for an int between 1 and 5
+to choose an operator (1-4) or quit the program (5). If the user inputs any other int,
+the program will display an error message and repeat the prompt. The program will then
+ask the user for two numbers and perform the chosen operation on the two inputs.
+Finally, the program will display the original prompt again and repeat this process
+until the user enters 5 to quit the program.
+
+Internally, the program consists of a very top level main(), prompt() to prompt the
+user to choose an operation, and a function for each of the four operations. prompt()
+asks the user to enter a number to choose an operation and returns that number as an
+int. Each of the four operator functions prompts the user for two numbers and then
+performs that function's respective operation on the inputs and displays the results.
+In main(), first int choice is declared to hold the user's choice. Then a while loop 
+begins with while(1) so that the loop will continue to run until the user chooses 5.
+In the loop, first prompt() is called and the user's choice is assigned to choice.
+Then, a switch statement is used to call the correct operator function in accordance
+with the user's choice. If the user enters 5, an error message is displayed and then
+there is a return statement to quit the program. The default case is to print an error
+message and reprompt the user.
+
+I verified that the output of the the program is correct by testing each of the cases
+and comparing the results to the results of the same calculations on my graphing 
+calculator.

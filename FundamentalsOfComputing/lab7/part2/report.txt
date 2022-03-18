@@ -1,0 +1,24 @@
+Hayden Owens
+CSE 20311
+Lab 7 Report
+
+From the user's perspective, the user can run the program with either 0 or 1 command line arguments. They can enter
+the csv file from the command line, or if they don't, they will be prompted for it once they run the program. After
+which, they will be shown a list of commands they can choose from to print info about states with given qualifiers.
+This will continue until the user decides to quit.
+
+From the programmer's perspective, the program consists of three files: statesmain.c, statesfunc.c, and statesfunc.h. 
+statesfunc.h defines a Struct State that holds 3 strings and an int and the function prototypes. statesfunc.c has the
+definitions for the functions. readUser() prompts the user for a filename and then calls readFile() which reads all
+the states from the file into an array and returns the number of states read in. compaere() converst two strings to
+lowercase versions and then calls strcmp() on them and returns that value. prompt() prints all the command options 
+and returns the user's input. display() uses a for loop to print the info for every State in states[]. All the other
+functions prompt the user for an input, store the input and check for its validity, and then uses a for loop to loop
+through states[] and compare each state to the input in some way and print some info about certain states. They also
+use a bool variable to keep track of whether or not any states matching the user's input were found and prints that
+none were found after the full loop if that is the case. statesmain.c checks if the user entered any command line 
+arguments and reacts accordingly. It then uses a switch statement to call appropriate functions based on the user's 
+input.
+
+I tested the correctness of my code by testing each function for both valid and invalid inputs and checking the csv
+file to ensure that the outputs were correct.

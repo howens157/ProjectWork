@@ -1,0 +1,25 @@
+Hayden Owens
+CSE 20311
+Lab 2 Report
+
+For part 3 of the lab, graph.c is programmed to generate an ASCII Art graph of a mathematical
+function. In my program I chose the function 20 + 8*sin(x)/(x/5) over the range 0.2 to 20.
+It also finds the maximum and minimum over that range.
+
+From the user's perspective, the user is not required to do anything. The user just runs the
+program and the graph will be created and the max and min displayed at the bottom of the graph.
+
+Internally, the program first declares all the variables it will use. Then prints the header of the
+graph. Next, the max and min variables are assigned the first values of the graph as the inital
+value to be checked against. Next, the graph is created with a for loop from from i = 1 to 100.
+i is multiplied by 0.2 every time to get the range 0.2 to 20 without losing precision. For every
+loop, Y is calculated and then a corresponding number of '>' characters are printed to create
+the graph. Also in the loop, every Y value is checked against the current min and max. If it is
+determined to be the new min or max, the value of min or max is updated to be the current Y value
+and the value of locMin or locMax are updated to be the current X value. Finally, after the graph
+is complete, the maximum, minimum, and their locations are printed to the user.
+
+The graph and max/min were verified to be correct through the use of WolframAlpha. I put the same
+equation into WolframAlpha and got the same graph. Additionally, it calculated the local maxima
+and minima which were the same as well, aside from some slight loss of precision due to the 
+program only calculating at every interval of 0.2.

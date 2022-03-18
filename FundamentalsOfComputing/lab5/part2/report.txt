@@ -1,0 +1,52 @@
+Hayden Owens
+CSE 20311
+Lab 5 Report
+
+From the user's perspective, the program prompts the user for a startup filename.
+After connecting to the file, it will display the 6 options the user can choose
+from. 1: Display the sayings. 2: Enter a new saying. 3: Delete a chosen saying.
+4: Search and display any sayings that contain a chosen substring. 5: Write the
+list of sayings to a new file. 6: Quit the program. The program will continue
+to prompt the user for a new action until they input 6 to close the program. If
+the user inputs a choice outside of the range, it will display an error message
+and reprompt.
+
+From the programmer's perspective, the program is structured very similary to
+menucalc.c from Lab 3. In main, the program prompts the user for a filename,
+calls startup() to connect to the file, quits if unable to connect, and then
+loops over a switch statement in order to call the appropriate functions or quit.
+Options 1-5 have a function, while quitting with option 6 is done in main by 
+just returning. The function for option 1, display(), first checks if the size
+of the sayings array is 0 and prints that there are no sayings stored. Then it
+loops through the rows of sayings[][] and prints each saying. It also checks if
+the current saying has a \n character and prints one if not. The function for 
+option 2, enternew(), first checks if there are already the maximum number of 
+sayings and prints an error message and return if so. Otherwise, it prompts the
+user for the new saying, reads in any stray characters in stdin, and then reads
+in the users new saying. It also creates a pointer to the first null character
+in the new saying and checks if it is at the end which would mean that the user
+entered a saying of maxlen or greater and if so, prints a warning that part of 
+the string may have been cut off and clears out stdin in case any cut off inputs
+were left in stdin. Finally, it copies the new saying into sayings[][], 
+increments the size, and returns the new size. The function for option 3, 
+delete(), uses a for loop and leftshifts all the sayings after the chosen saying
+in order to delete the chosen saying. It subtracts one from size and returns it.
+If size is 0, it prints a message saying so and returns. The function for option
+4, search(), first clears out stdin, then prompts the user for a target substring
+to search for, then deletes the \n character from the target string, and finally
+loops through the rows of sayings[][] and uses strstr() to check if target 
+occurs in the current row of sayings[][]. If so, it prints that row. Finally,
+the function for option 6, savetonew() prompts the user for the filename to write
+to, creates/connects to the file, and then prints all the contents of sayings[][]
+to the file. If sayings[][] is empty, it still creates an empty file. Otherwise,
+it prints using the same method as display(). Additionally, there are two other
+functions, startup() and prompt(). startup() is called by main to connect to the
+startup file and read in the contents to sayings[][] and returns the number of 
+sayings read in. If the file cannot be found, it prints an error message and 
+returns -1. prompt() displays all the options to the user and reads in their
+choice. If the choice is valid, it returns it. If not, it uses a goto statement
+to jump back to the beginning of prompt to reprompt the user. Finally, if the
+user enters 6, the program prints "Goodbye!" and exits.
+
+I verified the results and outputs of the program by manually testing all of the
+functions and testing the boundry conditions for the sizes of the inputs.

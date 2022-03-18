@@ -1,0 +1,27 @@
+Hayden Owens
+Lab 4 Report
+CSE 20311
+
+From the user's perspective, the program will output the options for that the user can 
+choose from. The user will be prompted for an int between 0 and 7 to choose an what 
+analysis to perform on the data (1-7) or quit the program (0). If the user inputs any 
+other int, the program will display an error message and repeat the prompt. The program 
+will then ask the user for any additional information if necessary and output the results. 
+Finally, the programwill display the original prompt again and repeat this process
+until the user enters 0 to quit the program.
+
+Internally, the program consists of a very top level main(), prompt() to prompt the
+user to choose an operation, and a function for each of the options available. prompt()
+asks the user to enter a number to choose an option from the list and returns that number 
+as an int. record() prompts the user for a year, and outputs the record for that year.
+minWins() and minLosses() prompt the user for a minimum number of wins/losses and 
+loop through the full arrays and prints all the years with a number of wins/losses at 
+or above that number. losingRecs() and winningRecs() print out all of the seasons with a 
+losing or winning record, respectively. losingStreaks() and winningStreaks() prompt the
+user for streak length and then loop through the entire arrays keeping track of the current
+length of the losing/winning streak. In every loop, it checks if the streak is over by
+premptively checking the next year and checks if the streak length is above the length
+input by the user. If both of these conditions are met, the streak is output to the user.
+
+I verified the results were correct by comparing the results output by the program to 
+the wikipedia page that the wins and losses were taken from.

@@ -1,0 +1,37 @@
+Hayden Owens
+CSE 20311
+Lab 6 Report
+
+From the user's perspective, they can either run the program with no additional arguments, or with a text file of
+prewritten commands. If they run it with no additional arguments, a blank board will be displayed with a command
+prompt for the user to enter commands. After every command, the update board will be printed and the user will be
+prompted again. The user can enter "a num1 num2" which will create a live cell at (num1, num2). The user can enter
+"r num1 num2" which will create a dead cell at (num1, num2). All cells are dead by default. The user can enter "n"
+which will advance the board by one generation and then redisplay the board. The user can enter "q" to quit the
+program. Finally, the user can enter "p" which will hand over control to the program which will continue to mutate
+the board until the user force quits the program.
+
+From the programmer's prespective, the program consists of three files. playlife.c is the main driver. lifefunc.h 
+contains the function prototypes. lifefunc.c contains the function definitions. playlife.c is similar to previous labs.
+If the user did not run the executable with a text file as an argument, it will read in the user's command input and
+use a switch statement to perfrom the appropriate command on the board. This will continue in a loop until the user
+enters "q" to quit or "p" to just watch the board mutate continuously. If the user did enter a text file as an argument,
+the program will create a file pointer to the file and read in the commands, adding or removing cells, until it reaches
+the "p" command at the end of the text file at which point it will mutate and display the board until the user force
+quits. If the user enters any other amount of arguments with the executable, an error will be displayed and the program
+will quit. As for the functions, first, initBoard() takes a 2D bool array as an argument and then uses nested for loops
+to loop through the entire board a set every cell to false (dead). Second, display() takes a 2D bool array as an 
+argument and uses nested for loops to loop through the board, printing the borders and printing an "X" if the cell
+is alive or a space if the cell is dead. addlive() and kill() take a 2D bool array and two ints as arguments and
+creates an alive or dead cell, respectively, and the coordinates passed to the function. Finally, step() handles
+the mutating of the board from generation to generation. It takes two 2D bool arrays, board and tempboard, as arguments.
+It uses a primary nested for loop to loop through the entire board and check if each cell is alive or dead. Then, the
+primary nested for loop contains a secondary nested for loop that loops through the neighbors of the current cell to
+count the number of living neighbors the cell has and determine if the cell should be alive or dead in the next
+generation. It stores the future value in tempboard until it finishes evaluating the full board, at which point a final
+nested for loop is used to copy the values of tempboard into board. Finally, initBoard() is called on tempboard to 
+prepare it for the next time step() is called.
+
+I verified the results of the program by creating known initial conditions for Conway's Game of Life and making sure
+that the behavior produced by my program was accurate. I tested static, oscillating, and moving conditions and checked
+that they all worked as expected.
